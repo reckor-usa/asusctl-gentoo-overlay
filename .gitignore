@@ -1,0 +1,15 @@
+# Portage/build output
+/distfiles/
+/packages/
+/work/
+/tmp/
+/temp/
+
+# Logs
+*.log
+
+# Editor files
+*~
+*.swp
+*.swo
+.DS_Store
