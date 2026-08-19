@@ -29,7 +29,7 @@ Confirmed working on ASUS ProArt P16 H7606WX with:
 
 ## Recommended USE flags
 
-    sys-power/asusctl X acpi gui -openrc
+    sys-power/asusctl X acpi gui
 
 This overlay intentionally does not enable `gfx` or `gnome`. The GUI is provided by `rog-control-center`; `gfx`/`gnome` are for `supergfxctl` integration, which is not required for the tested ProArt P16 setup.
 
@@ -43,7 +43,7 @@ Add the overlay with `eselect-repository`:
 Add package USE flags:
 
     mkdir -p /etc/portage/package.use
-    echo "sys-power/asusctl X acpi gui -openrc" >> /etc/portage/package.use/asusctl
+    echo "sys-power/asusctl X acpi gui" >> /etc/portage/package.use/asusctl
 
 Install:
 

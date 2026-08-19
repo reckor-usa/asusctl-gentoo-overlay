@@ -8,7 +8,7 @@ RUST_MAX_VER="1.95.0"
 RUST_NEEDS_LLVM=1
 LLVM_COMPAT=( 22 )
 
-inherit llvm-r1 systemd cargo linux-info udev xdg desktop
+inherit systemd cargo linux-info udev xdg desktop
 
 DESCRIPTION="Utility and daemon for controlling ASUS laptop features"
 HOMEPAGE="https://asus-linux.org https://github.com/OpenGamingCollective/asusctl"
@@ -17,21 +17,18 @@ VENDOR_TARBALL="vendor_${PN}_${PV}.tar.xz"
 
 SRC_URI="
 	https://github.com/OpenGamingCollective/${PN}/archive/refs/tags/${PV}.tar.gz -> ${P}.tar.gz
-	https://github.com/reckor-usa/asusctl-gentoo-overlay/releases/download/asusctl-6.4.0/${VENDOR_TARBALL}
+	https://github.com/reckor-usa/asusctl-gentoo-overlay/releases/download/${P}/${VENDOR_TARBALL}
 "
 
 S="${WORKDIR}/${P}"
 
-LICENSE="0BSD Apache-2.0 Apache-2.0-with-LLVM-exceptions BSD BSD-2 Boost-1.0 ISC LicenseRef-UFL-1.0 MIT MPL-2.0 OFL-1.1 Unicode-DFS-2016 Unlicense ZLIB"
+LICENSE="0BSD Apache-2.0 Apache-2.0-with-LLVM-exceptions BSD BSD-2 Boost-1.0 ISC UbuntuFontLicense-1.0 MIT MPL-2.0 OFL-1.1 Unicode-DFS-2016 Unlicense ZLIB"
 SLOT="0/6"
 KEYWORDS="~amd64"
+IUSE="X +acpi +gui"
 RESTRICT="mirror test"
 
-IUSE="+acpi +gui X -openrc"
-
 RDEPEND="
-	!!sys-power/rog-core
-	!!sys-power/asus-nb-ctrl
 	>=sys-power/power-profiles-daemon-0.13
 	acpi? ( sys-power/acpi_call )
 	gui? (
@@ -45,15 +42,6 @@ DEPEND="
 	dev-libs/libusb:1
 	media-libs/sdl2-gfx
 	sys-apps/dbus
-	!openrc? ( sys-apps/systemd:0= )
-	openrc? ( || (
-		sys-apps/openrc
-		sys-apps/sysvinit
-	) )
-	$(llvm_gen_dep '
-		llvm-core/clang:${LLVM_SLOT}=
-		llvm-core/llvm:${LLVM_SLOT}=
-	')
 "
 
 BDEPEND="
@@ -71,10 +59,14 @@ src_prepare() {
 	require_configured_kernel
 
 	local k_wrn_touch=""
-	linux_chkconfig_present I2C_HID_CORE || k_wrn_touch="${k_wrn_touch}> CONFIG_I2C_HID_CORE not found, should be either built-in or built as module\n"
-	linux_chkconfig_present I2C_HID_ACPI || k_wrn_touch="${k_wrn_touch}> CONFIG_I2C_HID_ACPI not found, should be either built-in or built as module\n"
-	linux_chkconfig_present HID_ASUS || k_wrn_touch="${k_wrn_touch}> CONFIG_HID_ASUS not found, should be either built-in or built as module\n"
-	linux_chkconfig_builtin PINCTRL_AMD || k_wrn_touch="${k_wrn_touch}> CONFIG_PINCTRL_AMD not found, must be built-in\n"
+	linux_chkconfig_present I2C_HID_CORE || \
+		k_wrn_touch+=$'> CONFIG_I2C_HID_CORE not found, should be built-in or module\n'
+	linux_chkconfig_present I2C_HID_ACPI || \
+		k_wrn_touch+=$'> CONFIG_I2C_HID_ACPI not found, should be built-in or module\n'
+	linux_chkconfig_present HID_ASUS || \
+		k_wrn_touch+=$'> CONFIG_HID_ASUS not found, should be built-in or module\n'
+	linux_chkconfig_builtin PINCTRL_AMD || \
+		k_wrn_touch+=$'> CONFIG_PINCTRL_AMD not found, must be built-in\n'
 	[[ ${k_wrn_touch} != "" ]] && ewarn "\nKernel configuration issue(s), needed for touchpad support:\n\n${k_wrn_touch}"
 
 	mkdir -p "${S}/.cargo" || die
@@ -83,7 +75,7 @@ src_prepare() {
 	if ! use gui; then
 		perl -0pi -e '
 			s/\n  "rog-control-center",//;
-			s/default-members = \["asusctl", "asusd", "asus-shutdown", "asusd-user", "rog-control-center"\]/default-members = ["asusctl", "asusd", "asus-shutdown", "asusd-user"]/;
+			s/, "rog-control-center"//g;
 		' Cargo.toml || die
 	fi
 
@@ -137,13 +129,9 @@ src_install() {
 	insinto /usr/share/dbus-1/system.d
 	doins data/asusd.conf
 
-	if ! use openrc; then
-		systemd_dounit data/asusd.service
-		systemd_dounit data/asus-shutdown.service
-		systemd_douserunit data/asusd-user.service
-	else
-		die "OpenRC support is not implemented in this local 6.4.0 ebuild yet"
-	fi
+	systemd_dounit data/asusd.service
+	systemd_dounit data/asus-shutdown.service
+	systemd_douserunit data/asusd-user.service
 
 	if use acpi; then
 		insinto /etc/modules-load.d

@@ -29,5 +29,5 @@ When upstream releases a new version:
 
 - `asusctl --version` changed; use `asusctl info`.
 - `rog-control-center` is the GUI, not Armoury Crate.
-- `gfx` and `gnome` are intentionally not enabled for the tested ProArt P16 setup.
+- `gfx`, `gnome`, and OpenRC integration are intentionally not enabled for the tested ProArt P16 setup.
 - Old user Aura config may crash `asusd-user.service`; neutral config is safer on H7606WX.
