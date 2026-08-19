@@ -142,7 +142,7 @@ src_install() {
 		systemd_dounit data/asus-shutdown.service
 		systemd_douserunit data/asusd-user.service
 	else
-		die "OpenRC support is not implemented in this local 6.3.8 ebuild yet"
+		die "OpenRC support is not implemented in this local 6.4.0 ebuild yet"
 	fi
 
 	if use acpi; then
@@ -167,7 +167,7 @@ pkg_postinst() {
 	udev_reload
 
 	elog "asusd is normally started through udev/systemd activation."
-	elog "This ebuild installs asus-shutdown.service, required by upstream 6.3.x."
+	elog "This ebuild installs asus-shutdown.service, required by upstream 6.4.x."
 }
 
 pkg_postrm() {
