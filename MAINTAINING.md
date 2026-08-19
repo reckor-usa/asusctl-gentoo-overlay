@@ -5,10 +5,10 @@ This file documents the update workflow for future `asusctl` releases.
 ## Current package
 
 - Package: `sys-power/asusctl`
-- Version: `6.3.8`
+- Version: `6.4.0`
 - Upstream: `OpenGamingCollective/asusctl`
-- Vendor tarball: `vendor_asusctl_6.3.8.tar.xz`
-- Release tag: `asusctl-6.3.8`
+- Vendor tarball: `vendor_asusctl_6.4.0.tar.xz`
+- Release tag: `asusctl-6.4.0`
 
 ## Update checklist
 
