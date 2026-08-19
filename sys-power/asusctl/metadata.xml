@@ -2,7 +2,7 @@
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
-		<email>mm@localhost</email>
+		<email>78680344+reckor-usa@users.noreply.github.com</email>
 		<name>MM</name>
 	</maintainer>
 	<upstream>
@@ -12,6 +12,6 @@
 		<flag name="acpi">Install acpi_call module autoload configuration</flag>
 		<flag name="gui">Build and install rog-control-center</flag>
 		<flag name="X">Enable X11 backend support for rog-control-center in addition to Wayland</flag>
-		<flag name="openrc">OpenRC support placeholder; unsupported in this local 6.3.8 ebuild</flag>
+		<flag name="openrc">OpenRC support placeholder; currently unsupported by this overlay ebuild</flag>
 	</use>
 </pkgmetadata>
