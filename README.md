@@ -6,7 +6,7 @@ This overlay is currently focused on ASUS ProArt P16 / H7606WX support.
 
 ## Current package
 
-- `sys-power/asusctl-6.3.8`
+- `sys-power/asusctl-6.4.0`
 - Source: `OpenGamingCollective/asusctl`
 - Tested on ASUS ProArt P16 H7606WX
 - systemd setup
@@ -25,6 +25,7 @@ Confirmed working on ASUS ProArt P16 H7606WX with:
 - profile control
 - keyboard LED brightness
 - `rog-control-center`
+- clean public overlay fetch test for 6.4.0
 
 ## Recommended USE flags
 
@@ -46,7 +47,7 @@ Add package USE flags:
 
 Install:
 
-    emerge -av =sys-power/asusctl-6.3.8::asusctl-gentoo-overlay
+    emerge -av =sys-power/asusctl-6.4.0::asusctl-gentoo-overlay
 
 ## After install
 
@@ -90,11 +91,11 @@ Stored at:
 
 This ebuild uses a vendored Rust dependency tarball hosted as a GitHub Release asset:
 
-    vendor_asusctl_6.3.8.tar.xz
+    vendor_asusctl_6.4.0.tar.xz
 
 Manifest SHA512:
 
-    d7e34667eea027d3c480194f23ac06423890dc355cfd94996faf036501221fdc1b665e0a292d9950068337bfae16f0a45bbba7a48ec77b0be295f92e50a73ed1
+    7eb8392256c95c570fe1c3ee8237d2a0e03582eb03455614d26cebdc9d8a0d6b3904af0ce4651948e73bf10e1c80483ca769d950283e91ef376017c12d2fb4f0
 
 ## Maintenance status
 
