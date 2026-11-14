@@ -6,7 +6,7 @@ This overlay is currently focused on ASUS ProArt P16 / H7606WX support.
 
 ## Current package
 
-- `sys-power/asusctl-6.4.0`
+- `sys-power/asusctl-6.5.0` (6.4.0 retained as fallback)
 - Source: `OpenGamingCollective/asusctl`
 - Tested on ASUS ProArt P16 H7606WX
 - systemd setup
@@ -19,13 +19,13 @@ Confirmed working on ASUS ProArt P16 H7606WX with:
 
 - `asusd.service`
 - `asus-shutdown.service`
-- `asusd-user.service`
+- `asusd-user.service` intentionally excluded from the 6.5.0 package
 - `asusctl info`
 - battery charge limit
 - profile control
 - keyboard LED brightness
 - `rog-control-center`
-- clean public overlay fetch test for 6.4.0
+- local 6.5.0 build, installation-image, hardware, and GUI tests
 
 ## Recommended USE flags
 
@@ -45,9 +45,14 @@ Add package USE flags:
     mkdir -p /etc/portage/package.use
     echo "sys-power/asusctl X acpi gui" >> /etc/portage/package.use/asusctl
 
+Before upgrading from 6.4.0, disable the old user daemon as your normal
+desktop user (not needed for a fresh installation):
+
+    systemctl --user disable --now asusd-user.service
+
 Install:
 
-    emerge -av =sys-power/asusctl-6.4.0::asusctl-gentoo-overlay
+    emerge -av =sys-power/asusctl-6.5.0::asusctl-gentoo-overlay
 
 ## After install
 
@@ -56,11 +61,7 @@ Reload systemd and udev:
     systemctl daemon-reload
     udevadm control --reload-rules
     systemctl restart asusd.service
-    systemctl start asus-shutdown.service
-
-Enable the user daemon:
-
-    systemctl --user enable --now asusd-user.service
+    systemctl enable --now asus-shutdown.service
 
 Check status:
 
@@ -70,32 +71,29 @@ Check status:
     asusctl leds get
     systemctl status asusd.service --no-pager -l
     systemctl status asus-shutdown.service --no-pager -l
-    systemctl --user status asusd-user.service --no-pager -l
 
-## Note about old user Aura config
+## User daemon migration
 
-On the tested ProArt P16, an old user config with active Aura animation caused `asusd-user.service` to crash because the laptop did not expose the expected direct Aura DBus object.
+The 6.5.0 package deliberately excludes the `asusd-user` binary and user
+service. The upstream component is being retired, and it repeatedly crashed
+during local 6.5.0 testing. The system daemon and GUI work without it.
 
-The safe user config was:
-
-    (
-        active_anime: None,
-        active_aura: None,
-    )
-
-Stored at:
-
-    ~/.config/rog/rog-user.ron
+Existing installations should disable the old user service. The former
+`~/.config/rog/rog-user.ron` Aura workaround applies only to legacy versions.
 
 ## Distfiles
 
-This ebuild uses a vendored Rust dependency tarball hosted as a GitHub Release asset:
+The 6.5.0 ebuild uses the upstream source archive and a Rust crate archive
+generated through `pycargoebuild`.
 
-    vendor_asusctl_6.4.0.tar.xz
+Release asset: `asusctl-6.5.0-crates.tar.xz`
 
-Manifest SHA512:
+SHA512:
 
-    7eb8392256c95c570fe1c3ee8237d2a0e03582eb03455614d26cebdc9d8a0d6b3904af0ce4651948e73bf10e1c80483ca769d950283e91ef376017c12d2fb4f0
+    4d7181dcd71fd29cbfb39e72da6a5a37bc8ff655cc3d256201396d5f3be212b9ecf9d381b15b0d65dd0933c86bcc5e4882be2a350372ad2c50d20e599cb454aa
+
+The retained 6.4.0 ebuild uses its original
+`vendor_asusctl_6.4.0.tar.xz` archive.
 
 ## Maintenance status
 
